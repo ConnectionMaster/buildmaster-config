@@ -454,6 +454,15 @@ class FedoraRawhideBuild(FedoraStableBuild):
     pass
 
 
+class FedoraRawhideFreedthreadingBuild(FedoraRawhideBuild):
+    # Build on 64-bit Fedora Rawhide.
+    buildersuffix = ".nogil"
+    configureFlags = FedoraRawhideBuild.configureFlags + [
+        "--disable-gil",
+    ]
+    factory_tags = ["nogil"]
+
+
 class RHEL8NoBuiltinHashesUnixBuildExceptBlake2(RHEL8Build):
     # Build on 64-bit RHEL8 using: --with-builtin-hashlib-hashes=blake2
     buildersuffix = ".no-builtin-hashes-except-blake2"
@@ -750,7 +759,9 @@ class UnixCrossBuild(UnixBuild):
 
         # Now that we have a "build" architecture Python, we can use that
         # to build a "host" (also known as the target we are cross compiling)
-        configure_cmd = self.host_configure_cmd + ["--prefix", "$(PWD)/target/host"]
+        # Take a copy so that the class-level definition isn't tainted
+        configure_cmd = list(self.host_configure_cmd)
+        configure_cmd += ["--prefix", "$(PWD)/target/host"]
         configure_cmd += self.configureFlags + self.extra_configure_flags
         configure_cmd += [util.Interpolate("--build=%(prop:build_triple)s")]
         configure_cmd += [f"--host={self.host}"]
@@ -958,6 +969,7 @@ class _Wasm32WasiBuild(UnixBuild):
 class Wasm32WasiDebugBuild(_Wasm32WasiBuild):
     append_suffix = ".debug"
     pydebug = True
+    testFlags = ["-u-cpu"]
 
 
 class _IOSSimulatorBuild(UnixBuild):
@@ -1067,7 +1079,8 @@ class _IOSSimulatorBuild(UnixBuild):
 
         # Now that we have a "build" architecture Python, we can use that
         # to build a "host" (also known as the target we are cross compiling)
-        configure_cmd = self.host_configure_cmd
+        # Take a copy so that the class-level definition isn't tainted
+        configure_cmd = list(self.host_configure_cmd)
         configure_cmd += self.configureFlags
         configure_cmd += self.extra_configure_flags
         configure_cmd += [

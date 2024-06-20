@@ -6,6 +6,7 @@ from custom.factories import (
     CentOS9Build,
     FedoraStableBuild,
     FedoraRawhideBuild,
+    FedoraRawhideFreedthreadingBuild,
     UnixAsanBuild,
     UnixAsanDebugBuild,
     UnixTraceRefsBuild,
@@ -68,7 +69,6 @@ NO_TIER = None
 STABLE_BUILDERS_TIER_1 = [
     # Linux x86-64 GCC
     ("AMD64 Debian root", "angelico-debian-amd64", UnixBuild),
-    ("AMD64 Debian PGO", "gps-debian-profile-opt", PGOUnixBuild),
     ("AMD64 Ubuntu Shared", "bolen-ubuntu", SharedUnixBuild),
     ("AMD64 Fedora Stable", "cstratak-fedora-stable-x86_64", FedoraStableBuild),
     ("AMD64 Fedora Stable Refleaks", "cstratak-fedora-stable-x86_64", UnixRefleakBuild),
@@ -135,8 +135,6 @@ STABLE_BUILDERS_TIER_2 = [
     ("aarch64 RHEL8 Refleaks", "cstratak-RHEL8-aarch64", UnixRefleakBuild),
     ("aarch64 RHEL8 LTO", "cstratak-RHEL8-aarch64", LTONonDebugUnixBuild),
     ("aarch64 RHEL8 LTO + PGO", "cstratak-RHEL8-aarch64", LTOPGONonDebugBuild),
-
-    ("aarch64 Debian Clang LTO + PGO", "gps-arm64-debian", ClangLTOPGONonDebugBuild),
 
     # macOS aarch64 clang
     ("ARM64 macOS", "pablogsal-macos-m1", MacOSArmWithBrewBuild),
@@ -235,7 +233,6 @@ UNSTABLE_BUILDERS_TIER_2 = [
     # UBSan is a special build
     ("AMD64 Fedora Rawhide Clang", "cstratak-fedora-rawhide-x86_64", ClangUnixBuild),
     ("AMD64 Fedora Rawhide Clang Installed", "cstratak-fedora-rawhide-x86_64", ClangUnixInstalledBuild),
-    ("AMD64 Clang UBSan", "gps-clang-ubsan", ClangUbsanLinuxBuild),
 
     # Linux ppc64le GCC
     # Fedora Rawhide is unstable
@@ -292,6 +289,15 @@ UNSTABLE_BUILDERS_NO_TIER = [
     # Linux x86-64 GCC musl
     ("AMD64 Alpine Linux", "ware-alpine", UnixBuild),
 
+    # Linux x86-64 GCC Fedora Rawhide Freethreading builders
+    ("AMD64 Fedora Rawhide NoGIL", "cstratak-fedora-rawhide-x86_64", FedoraRawhideFreedthreadingBuild),
+    ("aarch64 Fedora Rawhide NoGIL", "cstratak-fedora-rawhide-aarch64", FedoraRawhideFreedthreadingBuild),
+    ("PPC64LE Fedora Rawhide NoGIL", "cstratak-fedora-rawhide-ppc64le", FedoraRawhideFreedthreadingBuild),
+    # Linux x86-64 GCC Fedora Rawhide Freethreading refleak builders
+    ("AMD64 Fedora Rawhide NoGIL refleaks", "cstratak-fedora-rawhide-x86_64", UnixNoGilRefleakBuild),
+    ("aarch64 Fedora Rawhide NoGIL refleaks", "cstratak-fedora-rawhide-aarch64", UnixNoGilRefleakBuild),
+    ("PPC64LE Fedora Rawhide NoGIL refleaks", "cstratak-fedora-rawhide-ppc64le", UnixNoGilRefleakBuild),
+
     # Linux x86 (32-bit) GCC
     ("x86 Debian Non-Debug with X", "ware-debian-x86", NonDebugUnixBuild),
     ("x86 Debian Installed with X", "ware-debian-x86", UnixInstalledBuild),
@@ -341,12 +347,14 @@ DAILYBUILDERS = [
     "AMD64 RHEL7 Refleaks",
     "AMD64 RHEL8 Refleaks",
     "AMD64 CentOS9 Refleaks",
+    "AMD64 Fedora Rawhide NoGIL refleaks",
     # Linux PPC64LE
     "PPC64LE Fedora Rawhide Refleaks",
     "PPC64LE Fedora Stable Refleaks",
     "PPC64LE RHEL7 Refleaks",
     "PPC64LE RHEL8 Refleaks",
     "PPC64LE CentOS9 Refleaks",
+    "PPC64LE Fedora Rawhide NoGIL refleaks",
     # Linux s390x
     "s390x Fedora Rawhide Refleaks",
     "s390x Fedora Refleaks",
@@ -357,6 +365,7 @@ DAILYBUILDERS = [
     "aarch64 Fedora Stable Refleaks",
     "aarch64 RHEL8 Refleaks",
     "aarch64 CentOS9 Refleaks",
+    "aarch64 Fedora Rawhide NoGIL refleaks",
 ]
 
 # Match builder name (excluding the branch name) of builders that should only
